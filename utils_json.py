@@ -67,7 +67,7 @@ class CacheJSON:
         ''' Guarda datos en el caché '''
         with self._lock:
             self._cache = datos.copy() if datos else []
-            self._timestamp = datetime.now().timestamp
+            self._timestamp = datetime.now().timestamp()
             if ruta.exists():
                 self._file_mtime = ruta.stat().st_mtime
 
@@ -139,32 +139,32 @@ def guardar_json_append(dato: Dict, ruta: Path=ARCHIVO_JSON) -> bool:
 
     try:
         if not ruta.exists() or ruta.stat().st_size == 0:
-            # Si no existe crear nuevo archivo
+            # Si no existe, crear nuevo archivo
             with ruta.open('w', encoding='utf-8') as f:
                 json.dump([dato], f, ensure_ascii=False, indent=4)
         else:
             # Leer el archivo y agregar al final
             with ruta.open('r+', encoding='utf-8') as f:
                 # Ir al final del archivo y retroceder para quitar el ']'
-                f.seek(0, 2) # Ir al final
+                f.seek(0, 2)  # Ir al final
                 size = f.tell()
-
+                
                 # Retroceder hasta encontrar el ']'
-                f.seek(size -1)
+                f.seek(size - 1)
                 while f.tell() > 0:
                     char = f.read(1)
                     if char == ']':
                         f.seek(f.tell() - 1)
                         break
                     f.seek(f.tell() - 2)
-
+                
                 # Determinar si necesitamos coma
                 pos = f.tell()
                 if pos > 1:
-                    f.seek(pos -1)
+                    f.seek(pos - 1)
                     prev_char = f.read(1)
                     f.seek(pos)
-
+                    
                     if prev_char != '[':
                         f.write(',\n')
                 
@@ -174,7 +174,8 @@ def guardar_json_append(dato: Dict, ruta: Path=ARCHIVO_JSON) -> bool:
                 lines = json_str.split('\n')
                 indented = '\n'.join('    ' + line if line.strip() else line for line in lines)
                 f.write(indented)
-                f.write('\n')
+                f.write('\n]')
+
 
             # Invalidar caché
             _cache_global.invalidar()
@@ -301,7 +302,7 @@ def mostrar_json(limite: Optional[int]=None) -> None:
         titulo = f'📊 ÚLTIMOS {limite} CÁLCULOS (de {len(datos)} totales)'
     else:
         datos_mostrar = datos
-        titulos = f'📊 HISTORIAL DE CÁLCULOS ({len(datos)} registros)'
+        titulo = f'📊 HISTORIAL DE CÁLCULOS ({len(datos)} registros)'
 
     # Crear tabla
     table = Table(
@@ -452,9 +453,9 @@ def mostrar_ultimos_calculos(n: int=5) -> None:
     inicio = len(datos) - len(ultimos) + 1
 
     for i, registro in enumerate(ultimos, inicio):
-        fecha = registro.get('fecha', 'N/D'),
-        figura = registro.get('figura', 'desconocida').replace('_', ' ').title(),
-        area = registro.get('area', 'N/D'),
+        fecha = registro.get('fecha', 'N/D')
+        figura = registro.get('figura', 'desconocida').replace('_', ' ').title()
+        area = registro.get('area', 'N/D')
         params = registro.get('parametros', {})
 
         # Formatear parámetros
@@ -496,6 +497,111 @@ def limpiar_historial() -> bool:
         return False
 
     
+def buscar_por_figura(figura: str, ruta: Path=ARCHIVO_JSON) -> None:
+    ''' Busca y muestra registro de una figura específica '''
+    datos = cargar_json()
+
+    if not isinstance(datos, list):
+        console.print(Panel(
+            '[red]El formato del archivo JSON no es una lista de registros[/red]',
+            title='❌ Error',
+            border_style='red'
+        ))
+        return
+
+    figura = figura.lower().strip()
+
+    # Usar list comprehension
+    resultados = [
+        registro for registro in datos
+        if isinstance(registro, dict) and 
+        registro.get('figura', '').lower() == figura
+    ]
+
+    if not resultados:
+        console.print(Panel(
+            f'[yellow]No se encuentran registros para la figura "[bold]{figura}[/bold]"[/yellow]',
+            title='🔍 Búsqueda sin resultados',
+            border_style='yellow'
+        ))
+        return
+    
+    # Crear tabla de resultados
+    table = Table(
+        title=f'🔍 Resultados para: [bold green]{figura.replace("_", " ")}[/bold green]',
+        title_style='bold cyan',
+        box=box.DOUBLE,
+        show_header=True,
+        header_style='bold magenta',
+        border_style='cyan',
+        expand=False
+    )
+
+    table.add_column('#', style='yellow', justify='right', width=4)
+    table.add_column('Fecha', style='cyan', width=17)
+    table.add_column('Área', style='bold green', justify='right', width=12)
+    table.add_column('Paŕametros', style='blue', width=45)
+
+    for i, res in enumerate(resultados, 1):
+        fecha = res.get('fecha', 'N/D')
+        area = res.get('area', 'N/D')
+        params = res.get('parametros', {})
+
+        params_str = ', '.join([f'{k}: {v}' for k, v in params.items()] if isinstance(params,dict) else str(params))
+        area_str = f'{area:.2f}' if isinstance(area, (int, float)) else str(area)
+
+        table.add_row(str(i), fecha, area_str, params_str)
+
+    console.print(table)
+
+    # Panel con resumen
+    console.print(Panel(
+        f'[bold cyan]Total de registros encontrados:[/bold cyan] [yellow]{len(resultados)}[/yellow]',
+        border_style='green',
+        expand=False
+    ))
+
+
+def limpiar_cache():
+    ''' Limpia manualmente el caché '''
+    _cache_global.invalidar()
+    obtener_figura_mas_frecuente_cached.cache_clear()
+    calcular_estadisticas_cached.cache_clear()
+    console.print('[green]✅ Caché limpiado[/green]')
+
+
+def info_cache():
+    ''' Mostrar información sobre el estado de la caché '''
+    stats_figura = obtener_figura_mas_frecuente_cached.cache_info()
+    stats_estadisticas = calcular_estadisticas_cached.cache_info()
+
+    table = Table(title='📊 Estadísticas de Caché', box=box.SIMPLE)
+    table.add_column('Función', style='cyan')
+    table.add_column('Hits', style='green', justify='right')
+    table.add_column('Misses', style='yellow', justify='right')
+    table.add_column('Tamaño', style='blue', justify='right')
+    
+    table.add_row(
+        'Figura más frecuente',
+        str(stats_figura.hits),
+        str(stats_figura.misses),
+        f'{stats_figura.currsize}/{stats_figura.maxsize}'
+    )
+    
+    table.add_row(
+        'Estadísticas',
+        str(stats_estadisticas.hits),
+        str(stats_estadisticas.misses),
+        f'{stats_estadisticas.currsize}/{stats_estadisticas.maxsize}'
+    )
+    
+    console.print(table)
+    
+    if _cache_global._cache is not None:
+        console.print(f'\n[cyan]Caché global:[/cyan] [green]ACTIVO[/green]')
+        console.print(f'[cyan]Registros en caché:[/cyan] [yellow]{len(_cache_global._cache)}[/yellow]')
+    else:
+        console.print(f'\n[cyan]Caché global:[/cyan] [red]INACTIVO[/red]')
 
 
     

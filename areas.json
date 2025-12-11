@@ -1,0 +1,200 @@
+[
+    {
+        "fecha": "05/12/2025 19:23:11",
+        "figura": "circulo",
+        "area": 254.47,
+        "parametros": {
+            "radio": 9.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:23:22",
+        "figura": "trapecio",
+        "area": 600.0,
+        "parametros": {
+            "base_mayor": 65.0,
+            "base_menor": 55.0,
+            "altura": 10.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:23:30",
+        "figura": "cuadrado",
+        "area": 64.0,
+        "parametros": {
+            "lado": 8.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:28:12",
+        "figura": "poligono_regular",
+        "area": 135.0,
+        "parametros": {
+            "num_lados": 9,
+            "lado": 5.0,
+            "apotema": 6.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:28:25",
+        "figura": "elipse",
+        "area": 301.59,
+        "parametros": {
+            "semi_eje_hor": 12.0,
+            "semi_eje_ver": 8.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:28:36",
+        "figura": "corona_circular",
+        "area": 251.33,
+        "parametros": {
+            "radio_mayor": 12.0,
+            "radio_menor": 8.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:28:51",
+        "figura": "cubo",
+        "area": 486.0,
+        "parametros": {
+            "lado": 9.0
+        }
+    }
+,
+    {
+        "fecha": "05/12/2025 19:29:03",
+        "figura": "cono",
+        "area": 753.98,
+        "parametros": {
+            "radio": 12.0,
+            "generatriz": 8.0
+        }
+    }
+,
+    {
+        "fecha": "09/12/2025 13:30:03",
+        "figura": "corona_circular",
+        "area": 12252.21,
+        "parametros": {
+            "radio_mayor": 80.0,
+            "radio_menor": 50.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:58:12",
+        "figura": "rectangulo",
+        "area": 45.0,
+        "parametros": {
+            "base": 5.0,
+            "altura": 9.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:58:17",
+        "figura": "circulo",
+        "area": 201.06,
+        "parametros": {
+            "radio": 8.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:58:25",
+        "figura": "triangulo",
+        "area": 2646.0,
+        "parametros": {
+            "base": 98.0,
+            "altura": 54.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:58:36",
+        "figura": "poligono_regular",
+        "area": 448.0,
+        "parametros": {
+            "num_lados": 8,
+            "lado": 14.0,
+            "apotema": 8.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:58:47",
+        "figura": "trapecio",
+        "area": 4510.0,
+        "parametros": {
+            "base_mayor": 89.0,
+            "base_menor": 75.0,
+            "altura": 55.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:58:52",
+        "figura": "cuadrado",
+        "area": 9604.0,
+        "parametros": {
+            "lado": 98.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:59:05",
+        "figura": "poligono_regular",
+        "area": 2250.0,
+        "parametros": {
+            "num_lados": 75,
+            "lado": 5.0,
+            "apotema": 12.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:59:18",
+        "figura": "elipse",
+        "area": 565.49,
+        "parametros": {
+            "semi_eje_hor": 12.0,
+            "semi_eje_ver": 15.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:59:28",
+        "figura": "corona_circular",
+        "area": 3534.29,
+        "parametros": {
+            "radio_mayor": 45.0,
+            "radio_menor": 30.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:59:37",
+        "figura": "cubo",
+        "area": 384.0,
+        "parametros": {
+            "lado": 8.0
+        }
+    }
+,
+    {
+        "fecha": "11/12/2025 11:59:46",
+        "figura": "cono",
+        "area": 24586.1,
+        "parametros": {
+            "radio": 86.0,
+            "generatriz": 5.0
+        }
+    }
+]
