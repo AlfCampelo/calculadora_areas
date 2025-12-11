@@ -4,7 +4,8 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 
 from calcu_areas import calcular_area
-from utils_json import mostrar_json, mostrar_ultimos_calculos, limpiar_historial, buscar_por_figura
+from utils_json import mostrar_json, mostrar_ultimos_calculos, limpiar_historial, buscar_por_figura, mostrar_ranking_completo
+
 
 console = Console()
 
@@ -187,7 +188,8 @@ def mostrar_menu() -> None:
     table.add_row('12', 'Buscar historial por figura')
     table.add_row('13', 'Últimos cálculos')
     table.add_row('14', 'Limpiar historial')
-    table.add_row('15', 'Salir')
+    table.add_row('15', 'Mostrar ranking')
+    table.add_row('16', 'Salir')
 
     console.print(table)
 
@@ -235,7 +237,7 @@ def menu() -> None:
 
             opcion = Prompt.ask(
                 '\n[bold cyan]Elige una opción[/bold cyan]',
-                choices=[str(i) for i in range(1, 16)]
+                choices=[str(i) for i in range(1, 17)]
             )
 
             # Procesar figuras geometricas (opciones 1-10)
@@ -275,8 +277,12 @@ def menu() -> None:
                 if confirmacion.lower() == 's':
                     limpiar_historial()
             
-            # Salir (opción 15)
+            # Mostrar ranking (opción 15)
             elif opcion == '15':
+                mostrar_ranking_completo()
+
+            # Salir (opción 16)
+            elif opcion == '16':
                 console.print(Panel(
                     '[bold green]✋ Hasta pronto[/bold green]',
                     border_style='green'
@@ -284,7 +290,7 @@ def menu() -> None:
                 break
 
             # Pausa antes de mostrar el menú nuevamente
-            if opcion != '15':
+            if opcion != '17':
                 console.print('\n[dim]Presiona ENTER para continuar...[/dim]')
                 input()
                 console.clear()

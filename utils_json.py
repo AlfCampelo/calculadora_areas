@@ -472,6 +472,68 @@ def mostrar_ultimos_calculos(n: int=5) -> None:
     console.print(table)
 
 
+def mostrar_ranking_completo() -> None :
+    ''' Muestra un ranking completo de las figuras más calculadas'''
+    from collections import Counter
+    historial = cargar_json()
+
+    if not historial:
+        console.print(Panel(
+            '[yellow]No hay datos en el historial.[/yellow]',
+            title='Historial vacío',
+            border_style='yellow'
+        ))
+        return
+    
+    # Extraer figuras
+    figuras = [h.get('figura', 'desconocida') for h in historial]
+    contador = Counter(figuras)
+    total = len(figuras)
+
+    table = Table(
+        title='🏆 RANKING DE FIGURAS MÁS CALCULADAS',
+        header_style='bold cyan',
+        show_header=True,
+        border_style='green'
+    )
+
+    table.add_column("Posición", justify="center", style="yellow")
+    table.add_column("Figura", style="bold green")
+    table.add_column("Cantidad", justify="right", style="cyan")
+    table.add_column("Porcentaje", justify="right", style="magenta")
+    table.add_column("Barra", style="blue")
+
+    for pos, (figura, cantidad) in enumerate(contador.most_common(), 1):
+        porcentaje = (cantidad / total) * 100
+        barra = '🟦' * int(porcentaje / 5) # barra compacta
+
+        table.add_row(
+            str(pos),
+            figura.replace('_', ' ').title(),
+            str(cantidad),
+            f'{porcentaje:.1f}%',
+            barra
+        ) 
+    
+    console.print(table)
+    
+    """ 
+    figuras = [h[historial] for h in historial]
+    contador = Counter(figuras)
+
+    total = len(figuras)
+
+    print('🏆 RANKING DE FIGURAS')
+    print('=' * 40)
+
+    for posicion, (figura, cantidad) in enumerate(contador.most_common(), 1):
+        porcentaje = (cantidad / total) * 100
+        barra = '🟦' * int(porcentaje / 2)
+
+        print(f'{posicion}. {figura:<20} {cantidad:3} ({porcentaje:5.1f}%) {barra}')
+ """
+
+
 def limpiar_historial() -> bool:
     ''' Elimina todos los registros del historial '''
     try:
